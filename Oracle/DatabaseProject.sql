@@ -4,6 +4,7 @@ IS
     PROCEDURE p_CreateShopsTable;
     PROCEDURE p_CrateUserOpinionTable;
     PROCEDURE p_CreateProductsTable;
+    PROCEDURE p_CreateProductsCategoryTable;
     
     PROCEDURE p_DeleteAllData;
     PROCEDURE p_CreateDatabase;
@@ -105,7 +106,7 @@ AS
   
     PROCEDURE p_CreateProductsTable 
     IS
-        vv_UserOpinionTableName VARCHAR2(30) := 'TEST_PRODUCTS_T';
+        vv_ProductTableName VARCHAR2(30) := 'TEST_PRODUCTS_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
     BEGIN
@@ -120,7 +121,9 @@ AS
         INTO vv_TableCounter 
         FROM user_tables 
         WHERE 
-        table_name = vv_UserOpinionTableName;
+        table_name = vv_ProductTableName;
+        
+        dbms_output.put_line('Counter p_CreateProductsTable: ' || vv_TableCounter);
         
         IF vv_TableCounter = 0 THEN
             EXECUTE IMMEDIATE vv_SqlQuerry;
@@ -129,36 +132,130 @@ AS
     END p_CreateProductsTable;
 
 
+    PROCEDURE p_CreateProductValuesTable 
+    IS
+        vv_ProductValuesTableName VARCHAR2(30) := 'TEST_PRODUCTVALUES_T';
+        vv_SqlQuerry VARCHAR2(4000);
+        vv_TableCounter INTEGER;
+    BEGIN
+    
+        vv_SqlQuerry := 'CREATE TABLE TEST_PRODUCTVALUES_T( 
+                    PRODUCT_ID INTEGER CONSTRAINT FK_PRODUCT_KEY REFERENCES TEST_PRODUCTS_T(ID)
+                    , PRODUCT_VALUES VARCHAR2(1000)
+                    , CATEGORY_ID INTEGER CONSTRAINT FK_PRODUCTCATEGORY_KEY REFERENCES TEST_PRODUCTSCATEGORY_T(ID))';
+    
+        SELECT COUNT(*) 
+        INTO vv_TableCounter 
+        FROM user_tables 
+        WHERE 
+        table_name = vv_ProductValuesTableName;
+        
+        dbms_output.put_line('Counter p_CreateProductValuesTable: ' || vv_TableCounter);
+        
+        IF vv_TableCounter = 0 THEN
+            EXECUTE IMMEDIATE vv_SqlQuerry;
+        END IF;
+        
+    END p_CreateProductValuesTable;
+    
+    
+    PROCEDURE p_CreateProductsCategoryTable 
+    IS
+        vv_ProductCategoryTableName VARCHAR2(30) := 'TEST_PRODUCTSCATEGORY_T';
+        vv_SqlQuerry VARCHAR2(4000);
+        vv_TableCounter INTEGER;
+    BEGIN
+    
+        vv_SqlQuerry := 'CREATE TABLE TEST_PRODUCTSCATEGORY_T( 
+                    ID INTEGER CONSTRAINT PK_productsCategory_t PRIMARY KEY
+                    , PARENT_ID INTEGER
+                    , NAME VARCHAR2(1000))';
+    
+        SELECT COUNT(*) 
+        INTO vv_TableCounter 
+        FROM user_tables 
+        WHERE 
+        table_name = vv_ProductCategoryTableName;
+        
+        dbms_output.put_line('Counter p_CreateProductsCategoryTable: ' || vv_TableCounter);
+        
+        IF vv_TableCounter = 0 THEN
+            EXECUTE IMMEDIATE vv_SqlQuerry;
+        END IF;
+        
+    END p_CreateProductsCategoryTable;
+     
     PROCEDURE p_DeleteAllData
     IS
-        vv_TableCounterUsers INTEGER;
-        vv_TableCounterShops INTEGER;
-        vv_TableCounterOpinion INTEGER;
+        vi_TableCounterUsers INTEGER;
+        vi_TableCounterShops INTEGER;
+        vi_TableCounterOpinion INTEGER;
+        vi_TableCounterProducts INTEGER;
+        vi_CounterProductsCategory INTEGER;
+        vi_CounterProductsValues INTEGER;
     BEGIN
     
         SELECT COUNT(*)
-        INTO vv_TableCounterOpinion
+        INTO vi_TableCounterOpinion
         FROM user_tables 
         WHERE table_name = 'TEST_USEROPINION_T';
         
         SELECT COUNT(*)
-        INTO vv_TableCounterUsers
+        INTO vi_TableCounterUsers
         FROM user_tables 
         WHERE table_name = 'TEST_USERS_T';
         
         SELECT COUNT(*)
-        INTO vv_TableCounterShops
+        INTO vi_TableCounterShops
         FROM user_tables 
         WHERE table_name = 'TEST_SHOPS_T';
         
-        IF vv_TableCounterOpinion != 0 THEN
+        SELECT COUNT(*)
+        INTO vi_TableCounterProducts
+        FROM user_tables 
+        WHERE table_name = 'TEST_PRODUCTS_T';
+        
+        SELECT COUNT(*)
+        INTO vi_CounterProductsCategory
+        FROM user_tables 
+        WHERE table_name = 'TEST_PRODUCTSCATEGORY_T';
+           
+        SELECT COUNT(*)
+        INTO vi_CounterProductsValues
+        FROM user_tables 
+        WHERE table_name = 'TEST_PRODUCTVALUES_T';
+        
+        DBMS_OUTPUT.Put_Line( vi_TableCounterOpinion );  
+        DBMS_OUTPUT.Put_Line( vi_TableCounterUsers );  
+        DBMS_OUTPUT.Put_Line( vi_CounterProductsValues );  
+        DBMS_OUTPUT.Put_Line( vi_TableCounterProducts );  
+        DBMS_OUTPUT.Put_Line( vi_TableCounterShops );  
+        DBMS_OUTPUT.Put_Line( vi_CounterProductsCategory );  
+
+        
+        IF vi_TableCounterOpinion != 0 THEN
             EXECUTE IMMEDIATE 'DROP TABLE TEST_USEROPINION_T PURGE';
-        ELSIF vv_TableCounterUsers != 0 THEN
+        END IF;
+        
+        IF vi_TableCounterUsers != 0 THEN
             EXECUTE IMMEDIATE 'DROP TABLE TEST_USERS_T PURGE';
-        ELSIF vv_TableCounterShops != 0 THEN
+        END IF;
+        
+        IF vi_CounterProductsValues != 0 THEN
+            EXECUTE IMMEDIATE 'DROP TABLE  TEST_PRODUCTVALUES_T PURGE';
+        END IF;
+        
+        IF vi_TableCounterProducts != 0 THEN
+            EXECUTE IMMEDIATE 'DROP TABLE  TEST_PRODUCTS_T PURGE';
+        END IF;
+        
+        IF vi_TableCounterShops != 0 THEN
             EXECUTE IMMEDIATE 'DROP TABLE  TEST_SHOPS_T PURGE';
         END IF;
         
+        IF vi_CounterProductsCategory != 0 THEN
+            EXECUTE IMMEDIATE 'DROP TABLE TEST_PRODUCTSCATEGORY_T PURGE';
+        END IF;
     END p_DeleteAllData;
 
     PROCEDURE p_CreateDatabase
@@ -169,6 +266,8 @@ AS
         p_CreateShopsTable;
         p_CrateUserOpinionTable;
         p_CreateProductsTable;
+        p_CreateProductsCategoryTable;
+        p_CreateProductValuesTable;
     END p_CreateDatabase;
 
 END DatabaseProjectMGR; 
@@ -182,3 +281,4 @@ DatabaseProjectMGR.p_CreateDatabase;
 END;
 
 /
+
