@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class ProductsCategoryDatabase extends SQLiteOpenHelper {
 
 
-	public static final String USERTABLENAME = "PRODUCTSCATEGORY_T";
+	public static final String PRODUCTSCATEGORYTABLENAME = "PRODUCTSCATEGORY_T";
 	public static final String PRODUCTCATEGORY_ID = "ID";
 	public static final String PRODUCTCATEGORY_PARENTID = "PARENT_ID";
 	public static final String PRODUCTCATEGORY_NAME = "NAME";
@@ -21,7 +21,7 @@ public class ProductsCategoryDatabase extends SQLiteOpenHelper {
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE " + USERTABLENAME + " (" + 
+		db.execSQL("CREATE TABLE " + PRODUCTSCATEGORYTABLENAME + " (" + 
 				PRODUCTCATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 				PRODUCTCATEGORY_PARENTID + " INTEGER , " + 
 				PRODUCTCATEGORY_NAME + " TEXT NOT NULL " );
