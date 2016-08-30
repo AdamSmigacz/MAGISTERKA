@@ -268,6 +268,7 @@ AS
         p_CreateProductsTable;
         p_CreateProductsCategoryTable;
         p_CreateProductValuesTable;
+        
     END p_CreateDatabase;
 
 END DatabaseProjectMGR; 
