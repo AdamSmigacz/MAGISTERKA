@@ -16,13 +16,13 @@ CREATE OR REPLACE PACKAGE BODY DatabaseProjectMGR
 AS
     PROCEDURE p_CreateUserTable
     IS
-        vv_UsersTableName VARCHAR2(30) := 'TEST_USERS_T';
+        vv_UsersTableName VARCHAR2(30) := 'USERS_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
                 
     BEGIN
 
-        vv_SqlQuerry := 'CREATE TABLE TEST_USERS_T(
+        vv_SqlQuerry := 'CREATE TABLE USERS_T(
                     ID INTEGER CONSTRAINT pk_users_id PRIMARY KEY NOT NULL
                     , LOGIN VARCHAR2(100) NOT NULL
                     , PASSWORD VARCHAR2(100) NOT NULL
@@ -44,11 +44,11 @@ AS
 
     PROCEDURE p_CreateShopsTable
     IS
-        vv_ShopsTableName VARCHAR2(30) := 'TEST_SHOPS_T';
+        vv_ShopsTableName VARCHAR2(30) := 'SHOPS_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
     BEGIN
-        vv_SqlQuerry := 'CREATE TABLE TEST_SHOPS_T(
+        vv_SqlQuerry := 'CREATE TABLE SHOPS_T(
                     ID INTEGER CONSTRAINT pk_shops_id PRIMARY KEY NOT NULL
                     , NAME VARCHAR2(150) NOT NULL
                     , STREET VARCHAR2(50)
@@ -74,13 +74,13 @@ AS
 
     PROCEDURE p_CrateUserOpinionTable
     IS
-        vv_UserOpinionTableName VARCHAR2(30) := 'TEST_USEROPINION_T';
+        vv_UserOpinionTableName VARCHAR2(30) := 'USEROPINION_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
     
     BEGIN
     
-        vv_SqlQuerry := 'CREATE TABLE TEST_USEROPINION_T ( 
+        vv_SqlQuerry := 'CREATE TABLE USEROPINION_T ( 
                     ID INTEGER PRIMARY KEY
                     , USER_ID INTEGER CONSTRAINT fk_user_id references TEST_USERS_T(ID)
                     , SHOP_ID INTEGER CONSTRAINT fk_shop_id references TEST_SHOPS_T(ID)
@@ -106,12 +106,12 @@ AS
   
     PROCEDURE p_CreateProductsTable 
     IS
-        vv_ProductTableName VARCHAR2(30) := 'TEST_PRODUCTS_T';
+        vv_ProductTableName VARCHAR2(30) := 'PRODUCTS_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
     BEGIN
     
-        vv_SqlQuerry := 'CREATE TABLE test_products_t(
+        vv_SqlQuerry := 'CREATE TABLE PRODUCTS_T(
                     ID INTEGER CONSTRAINT products_pk PRIMARY KEY NOT NULL
                     , NAME VARCHAR2(400) NOT NULL
                     , SHOP_ID CONSTRAINT fk_test_shop_id REFERENCES TEST_SHOPS_T(ID) NOT NULL
@@ -134,12 +134,12 @@ AS
 
     PROCEDURE p_CreateProductValuesTable 
     IS
-        vv_ProductValuesTableName VARCHAR2(30) := 'TEST_PRODUCTVALUES_T';
+        vv_ProductValuesTableName VARCHAR2(30) := 'PRODUCTVALUES_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
     BEGIN
     
-        vv_SqlQuerry := 'CREATE TABLE TEST_PRODUCTVALUES_T( 
+        vv_SqlQuerry := 'CREATE TABLE PRODUCTVALUES_T( 
                     PRODUCT_ID INTEGER CONSTRAINT FK_PRODUCT_KEY REFERENCES TEST_PRODUCTS_T(ID)
                     , PRODUCT_VALUES VARCHAR2(1000)
                     , CATEGORY_ID INTEGER CONSTRAINT FK_PRODUCTCATEGORY_KEY REFERENCES TEST_PRODUCTSCATEGORY_T(ID))';
@@ -161,12 +161,12 @@ AS
     
     PROCEDURE p_CreateProductsCategoryTable 
     IS
-        vv_ProductCategoryTableName VARCHAR2(30) := 'TEST_PRODUCTSCATEGORY_T';
+        vv_ProductCategoryTableName VARCHAR2(30) := 'PRODUCTSCATEGORY_T';
         vv_SqlQuerry VARCHAR2(4000);
         vv_TableCounter INTEGER;
     BEGIN
     
-        vv_SqlQuerry := 'CREATE TABLE TEST_PRODUCTSCATEGORY_T( 
+        vv_SqlQuerry := 'CREATE TABLE PRODUCTSCATEGORY_T( 
                     ID INTEGER CONSTRAINT PK_productsCategory_t PRIMARY KEY
                     , PARENT_ID INTEGER
                     , NAME VARCHAR2(1000))';
@@ -198,32 +198,32 @@ AS
         SELECT COUNT(*)
         INTO vi_TableCounterOpinion
         FROM user_tables 
-        WHERE table_name = 'TEST_USEROPINION_T';
+        WHERE table_name = 'USEROPINION_T';
         
         SELECT COUNT(*)
         INTO vi_TableCounterUsers
         FROM user_tables 
-        WHERE table_name = 'TEST_USERS_T';
+        WHERE table_name = 'USERS_T';
         
         SELECT COUNT(*)
         INTO vi_TableCounterShops
         FROM user_tables 
-        WHERE table_name = 'TEST_SHOPS_T';
+        WHERE table_name = 'SHOPS_T';
         
         SELECT COUNT(*)
         INTO vi_TableCounterProducts
         FROM user_tables 
-        WHERE table_name = 'TEST_PRODUCTS_T';
+        WHERE table_name = 'PRODUCTS_T';
         
         SELECT COUNT(*)
         INTO vi_CounterProductsCategory
         FROM user_tables 
-        WHERE table_name = 'TEST_PRODUCTSCATEGORY_T';
+        WHERE table_name = 'PRODUCTSCATEGORY_T';
            
         SELECT COUNT(*)
         INTO vi_CounterProductsValues
         FROM user_tables 
-        WHERE table_name = 'TEST_PRODUCTVALUES_T';
+        WHERE table_name = 'PRODUCTVALUES_T';
         
         DBMS_OUTPUT.Put_Line( vi_TableCounterOpinion );  
         DBMS_OUTPUT.Put_Line( vi_TableCounterUsers );  
@@ -234,27 +234,27 @@ AS
 
         
         IF vi_TableCounterOpinion != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE TEST_USEROPINION_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE USEROPINION_T PURGE';
         END IF;
         
         IF vi_TableCounterUsers != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE TEST_USERS_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE USERS_T PURGE';
         END IF;
         
         IF vi_CounterProductsValues != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE  TEST_PRODUCTVALUES_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE  PRODUCTVALUES_T PURGE';
         END IF;
         
         IF vi_TableCounterProducts != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE  TEST_PRODUCTS_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE  PRODUCTS_T PURGE';
         END IF;
         
         IF vi_TableCounterShops != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE  TEST_SHOPS_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE  SHOPS_T PURGE';
         END IF;
         
         IF vi_CounterProductsCategory != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE TEST_PRODUCTSCATEGORY_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE PRODUCTSCATEGORY_T PURGE';
         END IF;
     END p_DeleteAllData;
 
