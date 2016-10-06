@@ -82,8 +82,8 @@ AS
     
         vv_SqlQuerry := 'CREATE TABLE USEROPINION_T ( 
                     ID INTEGER PRIMARY KEY
-                    , USER_ID INTEGER CONSTRAINT fk_user_id references TEST_USERS_T(ID)
-                    , SHOP_ID INTEGER CONSTRAINT fk_shop_id references TEST_SHOPS_T(ID)
+                    , USER_ID INTEGER CONSTRAINT fk_user_id references USERS_T(ID)
+                    , SHOP_ID INTEGER CONSTRAINT fk_shop_id references SHOPS_T(ID)
                     , PRODUCT_ID INTEGER --do zmiany jak bedzie gotowa tabela produktow
                     , OPINION VARCHAR2(3000)   
                     , RATE INTEGER 
@@ -114,7 +114,7 @@ AS
         vv_SqlQuerry := 'CREATE TABLE PRODUCTS_T(
                     ID INTEGER CONSTRAINT products_pk PRIMARY KEY NOT NULL
                     , NAME VARCHAR2(400) NOT NULL
-                    , SHOP_ID CONSTRAINT fk_test_shop_id REFERENCES TEST_SHOPS_T(ID) NOT NULL
+                    , SHOP_ID CONSTRAINT fk_shop_id REFERENCES SHOPS_T(ID) NOT NULL
                     , PRICE NUMBER(9,2) NOT NULL)';
     
         SELECT COUNT(*) 
@@ -131,32 +131,6 @@ AS
         
     END p_CreateProductsTable;
 
-
-    PROCEDURE p_CreateProductValuesTable 
-    IS
-        vv_ProductValuesTableName VARCHAR2(30) := 'PRODUCTVALUES_T';
-        vv_SqlQuerry VARCHAR2(4000);
-        vv_TableCounter INTEGER;
-    BEGIN
-    
-        vv_SqlQuerry := 'CREATE TABLE PRODUCTVALUES_T( 
-                    PRODUCT_ID INTEGER CONSTRAINT FK_PRODUCT_KEY REFERENCES TEST_PRODUCTS_T(ID)
-                    , PRODUCT_VALUES VARCHAR2(1000)
-                    , CATEGORY_ID INTEGER CONSTRAINT FK_PRODUCTCATEGORY_KEY REFERENCES TEST_PRODUCTSCATEGORY_T(ID))';
-    
-        SELECT COUNT(*) 
-        INTO vv_TableCounter 
-        FROM user_tables 
-        WHERE 
-        table_name = vv_ProductValuesTableName;
-        
-        dbms_output.put_line('Counter p_CreateProductValuesTable: ' || vv_TableCounter);
-        
-        IF vv_TableCounter = 0 THEN
-            EXECUTE IMMEDIATE vv_SqlQuerry;
-        END IF;
-        
-    END p_CreateProductValuesTable;
     
     
     PROCEDURE p_CreateProductsCategoryTable 
@@ -220,14 +194,10 @@ AS
         FROM user_tables 
         WHERE table_name = 'PRODUCTSCATEGORY_T';
            
-        SELECT COUNT(*)
-        INTO vi_CounterProductsValues
-        FROM user_tables 
-        WHERE table_name = 'PRODUCTVALUES_T';
+
         
         DBMS_OUTPUT.Put_Line( vi_TableCounterOpinion );  
         DBMS_OUTPUT.Put_Line( vi_TableCounterUsers );  
-        DBMS_OUTPUT.Put_Line( vi_CounterProductsValues );  
         DBMS_OUTPUT.Put_Line( vi_TableCounterProducts );  
         DBMS_OUTPUT.Put_Line( vi_TableCounterShops );  
         DBMS_OUTPUT.Put_Line( vi_CounterProductsCategory );  
@@ -241,16 +211,12 @@ AS
             EXECUTE IMMEDIATE 'DROP TABLE USERS_T PURGE';
         END IF;
         
-        IF vi_CounterProductsValues != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE  PRODUCTVALUES_T PURGE';
-        END IF;
-        
         IF vi_TableCounterProducts != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE  PRODUCTS_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE PRODUCTS_T PURGE';
         END IF;
         
         IF vi_TableCounterShops != 0 THEN
-            EXECUTE IMMEDIATE 'DROP TABLE  SHOPS_T PURGE';
+            EXECUTE IMMEDIATE 'DROP TABLE SHOPS_T PURGE';
         END IF;
         
         IF vi_CounterProductsCategory != 0 THEN
@@ -267,8 +233,7 @@ AS
         p_CrateUserOpinionTable;
         p_CreateProductsTable;
         p_CreateProductsCategoryTable;
-        p_CreateProductValuesTable;
-        
+     
     END p_CreateDatabase;
 
 END DatabaseProjectMGR; 
@@ -277,8 +242,8 @@ END DatabaseProjectMGR;
 
 BEGIN 
 
-DatabaseProjectMGR.p_CreateDatabase;
---DatabaseProjectMGR.p_deletealldata;
+DatabaseProjectMGR.p_CreateDatabase; -- stworzenie tabel uzytkownika MGR
+--DatabaseProjectMGR.p_deletealldata;  -- usuniecie tabel uzytkownika MGR
 END;
 
 /
